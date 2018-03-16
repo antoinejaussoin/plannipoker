@@ -7,8 +7,8 @@ class App extends Component {
     return (
       <div>
         <Card>1</Card>
-        <Card>2</Card>
-        <Card>3</Card>
+        <Card color="yellow">2</Card>
+        <Card color="#8bc34a">3</Card>
         <Card>🍎</Card>
       </div>
     );
