@@ -1,12 +1,27 @@
 import React from 'react';
-import './index.css';
+import styled from 'styled-components';
 
-const Card = ({ children, color }) => (
-  <div className="card" style={{ color, borderColor: color }}>
-    <div className="content">
+const Container = styled.div`
+  display: flex;
+  width: 100px;
+  height: 150px;
+  border: 3px solid ${props => props.color};
+  border-radius: 15px;
+  justify-content: space-around;
+  font-size: 5em;
+  color: ${props => props.color};
+`;
+
+const Content = styled.div`
+  align-self: center;
+`;
+
+const Card = ({ children, color = '#ff867c' }) => (
+  <Container color={color}>
+    <Content>
       {children}
-    </div>
-  </div>
+    </Content>
+  </Container>
 );
 
 export default Card;
