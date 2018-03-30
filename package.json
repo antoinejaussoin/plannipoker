@@ -21,7 +21,11 @@
     "concurrently": "^3.5.1",
     "nodemon": "^1.17.2"
   },
-  "proxy": "http://localhost:3001/",
+  "proxy": {
+    "/api": {
+      "target": "http://localhost:3001/"
+    }
+  },
   "nodemonConfig": {
     "watch": ["server/*"],
     "delay": "500"
