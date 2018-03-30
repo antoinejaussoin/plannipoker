@@ -12,13 +12,17 @@ const Container = styled.div`
 `;
 
 class App extends Component {
+  state = { cards: [] };
+
+  componentDidMount() {
+    fetch('/api/cards')
+      .then(response => response.json())
+      .then(cards => this.setState({ cards }));
+  }
   render() {
     return (
       <Container>
-        <Card>1</Card>
-        <Card color="yellow">2</Card>
-        <Card color="#8bc34a">3</Card>
-        <Card>🍎</Card>
+        { this.state.cards.map(card => <Card color={card.color}>{card.label}</Card>) }
       </Container>
     );
   }
