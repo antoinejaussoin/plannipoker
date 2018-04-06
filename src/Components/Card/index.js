@@ -10,14 +10,15 @@ const Container = styled.div`
   justify-content: space-around;
   font-size: 5em;
   color: ${props => props.color};
+  cursor: pointer;
 `;
 
 const Content = styled.div`
   align-self: center;
 `;
 
-const Card = ({ children, color = '#ff867c' }) => (
-  <Container color={color}>
+const Card = ({ children, color = '#ff867c', onClick }) => (
+  <Container color={color} onClick={onClick}>
     <Content>
       {children}
     </Content>
