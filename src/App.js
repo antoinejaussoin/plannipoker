@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import Card from './Components/Card';
+import io from 'socket.io-client';
 
 const CardsContainer = styled.div`
   display: flex;
@@ -29,11 +30,25 @@ const Selection = styled.div`
 
 class App extends Component {
   state = { cards: [], selection: [] };
+  socket = null;
 
   componentDidMount() {
     fetch('/api/cards')
       .then(response => response.json())
       .then(cards => this.setState({ cards }));
+
+    this.socket = io();
+    this.socket.on('disconnect', () => {
+      console.warn('Server disconnected');
+      this.setState({
+        selection: []
+      });
+    });
+    this.socket.on('RECEIVE_SELECTION', payload => {
+      this.setState({
+        selection: payload
+      });
+    });
   }
 
   selectCard = (card) => {
@@ -42,7 +57,7 @@ class App extends Component {
         ...this.state.selection,
         card
       ]
-    })
+    }, () => this.socket.emit('SEND_SELECTION', this.state.selection));
   }
 
   render() {

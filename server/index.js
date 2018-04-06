@@ -1,6 +1,10 @@
 const express = require('express');
+const http = require('http');
+const socketIo = require('socket.io');
 
 const app = express();
+const httpServer = new http.Server(app);
+const io = socketIo(httpServer);
 const port = process.env.PORT || 3001;
 
 app.get('/api/cards', (req, res) => {
@@ -21,4 +25,20 @@ app.get('/api/cards', (req, res) => {
   ]);
 });
 
-app.listen(port, () => console.log(`Listening on port ${port}`));
+let currentSelection = [];
+
+io.on('connection', socket => {
+  console.log(' Connection: New user connected - ', socket.id);
+
+  // Sending the current selection to newly connected user
+  socket.emit('RECEIVE_SELECTION', currentSelection);
+
+  // Each time the selection is updated, broadcast to everyone
+  socket.on('SEND_SELECTION', data => {
+    console.log(' --> Receiving new selection, broadcasting to everyone');
+    currentSelection = data;
+    socket.broadcast.emit('RECEIVE_SELECTION', data);
+  });
+});
+
+httpServer.listen(port, () => console.log(`Listening on port ${port}`));
