@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import Card from './Components/Card';
 import io from 'socket.io-client';
+import { RECEIVE_SELECTION, SEND_SELECTION, JOIN_SESSION } from './actions';
 
 const CardsContainer = styled.div`
   display: flex;
@@ -44,7 +45,10 @@ class App extends Component {
         selection: []
       });
     });
-    this.socket.on('RECEIVE_SELECTION', payload => {
+    this.socket.emit(JOIN_SESSION, {
+      roomId: this.getSessionId(),
+    });
+    this.socket.on(RECEIVE_SELECTION, payload => {
       this.setState({
         selection: payload
       });
@@ -57,13 +61,25 @@ class App extends Component {
         ...this.state.selection,
         card
       ]
-    }, () => this.socket.emit('SEND_SELECTION', this.state.selection));
+    }, this.sendSelection);
+  }
+
+  sendSelection() {
+    this.socket.emit(SEND_SELECTION, {
+      roomId: this.getSessionId(),
+      payload: this.state.selection
+    });
+  }
+
+  getSessionId() {
+    return window.location.pathname.replace('/games/', '') || '';
   }
 
   render() {
     return (
       <Page>
         <Selection>
+          <h1>Room {this.getSessionId()}</h1>
           <h1>Your selection:</h1>
           <CardsContainer>
             { this.state.selection.map((card, index) =>
