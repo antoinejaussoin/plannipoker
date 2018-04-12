@@ -1,6 +1,7 @@
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
+const { JOIN_SESSION, LEAVE_SESSION, RECEIVE_SELECTION, SEND_SELECTION } = require('./actions');
 
 const app = express();
 const httpServer = new http.Server(app);
@@ -25,19 +26,63 @@ app.get('/api/cards', (req, res) => {
   ]);
 });
 
-let currentSelection = [];
+// Data holding structure
+const rooms = {};
 
-io.on('connection', socket => {
+// Get or create a room from a roomId
+const getRoom = (roomId) => {
+  if (!rooms[roomId]) {
+    rooms[roomId] = {
+      cards: []
+    };
+  }
+
+  return rooms[roomId];
+};
+
+// Broadcast an action to all people in a room
+const sendToAll = (socket, room, action, data) => {
+  console.log(` ==> ${action} ${JSON.stringify(data)}`);
+  socket
+    .broadcast
+    .to(room)
+    .emit(action, data);
+};
+
+// Broadcast an action to the socket owner only
+const sendToSelf = (socket, action, data) => {
+  console.log(` --> ${action} ${JSON.stringify(data)}`);
+  socket.emit(action, data);
+};
+
+const joinHandler = (roomId, room, payload, socket) => {
+  socket.join(roomId, () => {
+    socket.roomId = roomId;
+    if (room.cards.length) {
+      sendToSelf(socket, RECEIVE_SELECTION, room.cards);
+    }
+  });
+}
+
+const sendSelectionHandler = (roomId, room, payload, socket) => {
+  room.cards = payload;
+  sendToAll(socket, roomId, RECEIVE_SELECTION, payload);
+}
+
+io.on('connection', (socket) => {
   console.log(' Connection: New user connected - ', socket.id);
 
-  // Sending the current selection to newly connected user
-  socket.emit('RECEIVE_SELECTION', currentSelection);
+  const actions = [
+    { action: JOIN_SESSION, handler: joinHandler },
+    { action: SEND_SELECTION, handler: sendSelectionHandler },
+  ];
 
-  // Each time the selection is updated, broadcast to everyone
-  socket.on('SEND_SELECTION', data => {
-    console.log(' --> Receiving new selection, broadcasting to everyone');
-    currentSelection = data;
-    socket.broadcast.emit('RECEIVE_SELECTION', data);
+  actions.forEach(action => {
+    socket.on(action.action, data => {
+      console.log(` [Room ${data.roomId}]: ${action.action}`)
+      const room = getRoom(data.roomId);
+      action.handler(data.roomId, room, data.payload, socket);
+    });
   });
 });
 
