@@ -1,7 +1,14 @@
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
-const { JOIN_SESSION, LEAVE_SESSION, RECEIVE_SELECTION, SEND_SELECTION } = require('./actions');
+const find = require('lodash/find');
+const { JOIN_SESSION,
+        LEAVE_SESSION,
+        RECEIVE_SELECTION,
+        SEND_SELECTION,
+        RENAME_USER,
+        RECEIVE_PLAYER_LIST
+} = require('./actions');
 
 const app = express();
 const httpServer = new http.Server(app);
@@ -33,7 +40,8 @@ const rooms = {};
 const getRoom = (roomId) => {
   if (!rooms[roomId]) {
     rooms[roomId] = {
-      cards: []
+      cards: [],
+      players: []
     };
   }
 
@@ -58,9 +66,15 @@ const sendToSelf = (socket, action, data) => {
 const joinHandler = (roomId, room, payload, socket) => {
   socket.join(roomId, () => {
     socket.roomId = roomId;
+    room.players.push({
+      id: socket.id,
+      name: 'Player Unknown'
+    });
     if (room.cards.length) {
       sendToSelf(socket, RECEIVE_SELECTION, room.cards);
     }
+    sendToSelf(socket, RECEIVE_PLAYER_LIST, room.players);
+    sendToAll(socket, roomId, RECEIVE_PLAYER_LIST, room.players);
   });
 }
 
@@ -69,12 +83,22 @@ const sendSelectionHandler = (roomId, room, payload, socket) => {
   sendToAll(socket, roomId, RECEIVE_SELECTION, payload);
 }
 
+const renameUserHandler = (roomId, room, payload, socket) => {
+  const user = find(room.players, { id: socket.id });
+  if (user) {
+    user.name = payload;
+  }
+  sendToSelf(socket, RECEIVE_PLAYER_LIST, room.players);
+  sendToAll(socket, roomId, RECEIVE_PLAYER_LIST, room.players);
+}
+
 io.on('connection', (socket) => {
   console.log(' Connection: New user connected - ', socket.id);
 
   const actions = [
     { action: JOIN_SESSION, handler: joinHandler },
     { action: SEND_SELECTION, handler: sendSelectionHandler },
+    { action: RENAME_USER, handler: renameUserHandler },
   ];
 
   actions.forEach(action => {
