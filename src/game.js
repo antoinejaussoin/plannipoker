@@ -4,8 +4,6 @@ import styled from 'styled-components';
 import Card from './Components/Card';
 import UserList from './Components/UserList';
 import Input from './Components/Input';
-import io from 'socket.io-client';
-import { RECEIVE_SELECTION, SEND_SELECTION, JOIN_SESSION, RENAME_USER, RECEIVE_PLAYER_LIST } from './actions';
 
 const CardsContainer = styled.div`
   display: flex;
@@ -40,53 +38,15 @@ const Selection = styled.div`
   min-height: 200px;
 `;
 
-@observer
 @inject('store')
+@observer
 class Game extends Component {
-  state = { cards: [], selection: [], players: [] };
-  socket = null;
-
   componentDidMount() {
-    fetch('/api/cards')
-      .then(response => response.json())
-      .then(cards => this.setState({ cards }));
-
-    this.socket = io();
-    this.socket.on('disconnect', () => {
-      console.warn('Server disconnected');
-      this.setState({
-        selection: []
-      });
-    });
-    this.socket.emit(JOIN_SESSION, {
-      roomId: this.getSessionId(),
-    });
-    this.socket.on(RECEIVE_SELECTION, payload => {
-      this.setState({
-        selection: payload
-      });
-    });
-    this.socket.on(RECEIVE_PLAYER_LIST, payload => {
-      this.setState({
-        players: payload
-      });
-    });
+    this.props.store.connect(this.getSessionId());
   }
 
   selectCard = (card) => {
-    this.setState({
-      selection: [
-        ...this.state.selection,
-        card
-      ]
-    }, this.sendSelection);
-  }
-
-  sendSelection() {
-    this.socket.emit(SEND_SELECTION, {
-      roomId: this.getSessionId(),
-      payload: this.state.selection
-    });
+    this.props.store.selectCard(card);
   }
 
   getSessionId() {
@@ -96,19 +56,14 @@ class Game extends Component {
   onNameChange = (e) => {
     const value = e.target.value;
     this.props.store.changeUsername(value);
-    this.socket.emit(RENAME_USER, {
-      roomId: this.getSessionId(),
-      payload: value
-    });
   }
 
   render() {
-    const { selection, cards, players } = this.state;
-    const { store } = this.props;
+    const { username, selection, cards, players } = this.props.store;
     return (
       <Page>
         <Aside>
-          <Input value={store.username} onChange={this.onNameChange} />
+          <Input value={username} onChange={this.onNameChange} />
           <UserList users={players} />
         </Aside>
         <Main>
