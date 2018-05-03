@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { observer, inject } from 'mobx-react';
 import styled from 'styled-components';
 import Card from './Components/Card';
 import UserList from './Components/UserList';
@@ -39,8 +40,10 @@ const Selection = styled.div`
   min-height: 200px;
 `;
 
+@observer
+@inject('store')
 class Game extends Component {
-  state = { cards: [], selection: [], name: 'Player Unknown', players: [] };
+  state = { cards: [], selection: [], players: [] };
   socket = null;
 
   componentDidMount() {
@@ -92,9 +95,7 @@ class Game extends Component {
 
   onNameChange = (e) => {
     const value = e.target.value;
-    this.setState({
-      name: value
-    });
+    this.props.store.changeUsername(value);
     this.socket.emit(RENAME_USER, {
       roomId: this.getSessionId(),
       payload: value
@@ -102,11 +103,12 @@ class Game extends Component {
   }
 
   render() {
-    const { name, selection, cards, players } = this.state;
+    const { selection, cards, players } = this.state;
+    const { store } = this.props;
     return (
       <Page>
         <Aside>
-          <Input value={name} onChange={this.onNameChange} />
+          <Input value={store.username} onChange={this.onNameChange} />
           <UserList users={players} />
         </Aside>
         <Main>
