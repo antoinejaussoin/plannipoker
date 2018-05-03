@@ -1,5 +1,5 @@
 import io from 'socket.io-client';
-import { JOIN_SESSION } from '../actions';
+import { JOIN_SESSION, LEAVE_SESSION } from '../actions';
 
 export default class SocketIo {
   roomId = null;
@@ -7,15 +7,18 @@ export default class SocketIo {
 
   connect() {
     this.socket = io();
+    this.socket.on('disconnect', () => {
+      this.socket = null;
+    });
   }
 
   disconnect() {
     this.socket.disconnect();
   }
 
-  join(roomId) {
+  join(roomId, username) {
     this.roomId = roomId;
-    this.send(JOIN_SESSION);
+    this.send(JOIN_SESSION, username);
   }
 
   send(action, payload) {

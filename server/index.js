@@ -68,7 +68,7 @@ const joinHandler = (roomId, room, payload, socket) => {
     socket.roomId = roomId;
     room.players.push({
       id: socket.id,
-      name: 'Player Unknown'
+      name: payload || 'Player Unknown'
     });
     if (room.cards.length) {
       sendToSelf(socket, RECEIVE_SELECTION, room.cards);
@@ -92,6 +92,11 @@ const renameUserHandler = (roomId, room, payload, socket) => {
   sendToAll(socket, roomId, RECEIVE_PLAYER_LIST, room.players);
 }
 
+const leaveSessionHandler = (roomId, room, payload, socket) => {
+  room.players = room.players.filter(player => player.id !== socket.id);
+  sendToAll(socket, roomId, RECEIVE_PLAYER_LIST, room.players);
+}
+
 io.on('connection', (socket) => {
   console.log(' Connection: New user connected - ', socket.id);
 
@@ -99,6 +104,7 @@ io.on('connection', (socket) => {
     { action: JOIN_SESSION, handler: joinHandler },
     { action: SEND_SELECTION, handler: sendSelectionHandler },
     { action: RENAME_USER, handler: renameUserHandler },
+    { action: LEAVE_SESSION, handler: leaveSessionHandler },
   ];
 
   actions.forEach(action => {
@@ -107,6 +113,13 @@ io.on('connection', (socket) => {
       const room = getRoom(data.roomId);
       action.handler(data.roomId, room, data.payload, socket);
     });
+  });
+
+  socket.on('disconnect', () => {
+    if (socket.roomId) {
+      const room = getRoom(socket.roomId);
+      leaveSessionHandler(socket.roomId, room, null, socket);
+    }
   });
 });
 

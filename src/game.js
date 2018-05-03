@@ -45,6 +45,10 @@ class Game extends Component {
     this.props.store.connect(this.getSessionId());
   }
 
+  componentWillUnmount() {
+    this.props.store.disconnect();
+  }
+
   selectCard = (card) => {
     this.props.store.selectCard(card);
   }

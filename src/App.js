@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import Home from './home';
 import Game from './game';
@@ -28,9 +28,10 @@ const Main = styled.main`
 
 class App extends Component {
   render() {
+    const { history } = this.props;
     return (
       <Page>
-        <Header>Plannipoker</Header>
+        <Header onClick={() => history.push('/')}>Plannipoker</Header>
         <Main>
           <Switch>
             <Route path="/" exact component={Home} />
@@ -43,4 +44,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default withRouter(App);

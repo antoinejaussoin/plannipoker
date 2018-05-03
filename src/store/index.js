@@ -21,7 +21,7 @@ class Store {
   @action async connect(roomId) {
     this.roomId = roomId;
     this.transport.connect();
-    this.transport.join(roomId);
+    this.transport.join(roomId, this.username);
     
     this.transport.on(RECEIVE_SELECTION, this.receiveSelection);
     this.transport.on(RECEIVE_PLAYER_LIST, this.receivePlayerList);
