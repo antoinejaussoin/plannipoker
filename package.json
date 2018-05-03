@@ -8,6 +8,8 @@
     "mobx": "^4.2.0",
     "mobx-react": "^5.1.2",
     "react": "^16.2.0",
+    "react-app-rewire-mobx": "^1.0.8",
+    "react-app-rewired": "^1.5.2",
     "react-dom": "^16.2.0",
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.1.1",
@@ -19,11 +21,10 @@
   },
   "scripts": {
     "start": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\"",
-    "client": "react-scripts start",
+    "client": "react-app-rewired start",
     "server": "nodemon ./server/index.js",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test --env=jsdom"
   },
   "devDependencies": {
     "concurrently": "^3.5.1",
