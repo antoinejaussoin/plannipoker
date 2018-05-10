@@ -1,24 +1,16 @@
 import React from 'react';
-import styled from 'styled-components';
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const User = styled.div`
-  align-self: center;
-  flex: 1;
-`;
+import { Avatar, List, ListItem, ListItemText } from 'material-ui';
+import deepOrange from 'material-ui/colors/deepOrange';
 
 const UserList = ({ users = [] }) => (
-  <Container>
+  <List>
     {users.map(user => (
-      <User key={user.id}>
-        {user.name}
-      </User>
+      <ListItem key={user.id} dense button>
+        <Avatar alt={user.name} style={{ backgroundColor: deepOrange["600"] }}>{user.name[0]}</Avatar>
+        <ListItemText primary={user.name} />
+      </ListItem>
     ))}
-  </Container>
+  </List>
 );
 
 export default UserList;

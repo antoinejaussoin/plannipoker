@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, Switch, withRouter } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from './header';
 import Home from '../Home';
@@ -19,7 +19,6 @@ const Main = styled.main`
 
 class App extends Component {
   render() {
-    const { history } = this.props;
     return (
       <Page>
         <Header />
@@ -35,4 +34,4 @@ class App extends Component {
   }
 }
 
-export default withRouter(App);
+export default App;
