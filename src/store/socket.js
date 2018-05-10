@@ -1,5 +1,5 @@
 import io from 'socket.io-client';
-import { JOIN_SESSION, LEAVE_SESSION } from '../actions';
+import { JOIN_SESSION } from '../actions';
 
 export default class SocketIo {
   roomId = null;
