@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import styled from 'styled-components';
-import Card from './Components/Card';
-import UserList from './Components/UserList';
-import Input from './Components/Input';
+import Card from '../Components/Card';
+import UserList from '../Components/UserList';
+import Input from '../Components/Input';
 
 const CardsContainer = styled.div`
   display: flex;
@@ -57,8 +57,7 @@ class Game extends Component {
     return this.props.match.params.gameId;
   }
 
-  onNameChange = (e) => {
-    const value = e.target.value;
+  onNameChange = (value) => {
     this.props.store.changeUsername(value);
   }
 

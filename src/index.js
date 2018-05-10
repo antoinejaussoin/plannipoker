@@ -7,7 +7,7 @@ import SocketIo from './store/socket';
 import Api from './store/api';
 import 'whatwg-fetch';
 import './global-styles';
-import App from './App';
+import Layout from './Layout';
 import registerServiceWorker from './registerServiceWorker';
 import { BrowserRouter } from 'react-router-dom'
 
@@ -20,7 +20,7 @@ const store = new Store(new SocketIo(), new Api());
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
-      <App />
+      <Layout />
     </BrowserRouter>
   </Provider>,
   document.getElementById('root'));

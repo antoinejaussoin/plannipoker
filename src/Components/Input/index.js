@@ -5,7 +5,7 @@ const Input = ({ label, value, onChange }) => (
   <TextField
     label={label}
     value={value}
-    onChange={onChange}
+    onChange={e => onChange(e.target.value)}
     margin="normal" />
 );
 

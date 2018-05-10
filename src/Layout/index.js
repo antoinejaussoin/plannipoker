@@ -1,21 +1,12 @@
 import React, { Component } from 'react';
 import { Route, Switch, withRouter } from 'react-router-dom';
 import styled from 'styled-components';
-import Home from './home';
-import Game from './game';
+import Header from './header';
+import Home from '../Home';
+import Game from '../Game';
 
 const Page = styled.div`
 
-`;
-
-const Header = styled.header`
-  display: flex;
-  align-items: center;
-  height: 100px;
-  background-color: #AD1457;
-  font-size: 2em;
-  color: white;
-  padding-left: 50px;
 `;
 
 const Footer = styled.footer`
@@ -31,7 +22,7 @@ class App extends Component {
     const { history } = this.props;
     return (
       <Page>
-        <Header onClick={() => history.push('/')}>Plannipoker</Header>
+        <Header />
         <Main>
           <Switch>
             <Route path="/" exact component={Home} />
