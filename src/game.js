@@ -67,7 +67,7 @@ class Game extends Component {
     return (
       <Page>
         <Aside>
-          <Input value={username} onChange={this.onNameChange} />
+          <Input label="Your name" value={username} onChange={this.onNameChange} />
           <UserList users={players} />
         </Aside>
         <Main>
