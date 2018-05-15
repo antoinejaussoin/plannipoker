@@ -1,89 +1,83 @@
-const express = require('express');
-const http = require('http');
-const socketIo = require('socket.io');
-const find = require('lodash/find');
-const { JOIN_SESSION,
+import * as express from 'express';
+import * as http from 'http';
+import * as socketIo from 'socket.io';
+import { find } from 'lodash';
+import { JOIN_SESSION,
         LEAVE_SESSION,
         RECEIVE_SELECTION,
         SEND_SELECTION,
         RENAME_USER,
         RECEIVE_PLAYER_LIST
-} = require('./actions');
+} from './actions';
+import { Card, Game, Story, Player, Vote } from './models';
+
 
 const app = express();
 const httpServer = new http.Server(app);
 const io = socketIo(httpServer);
-const port = process.env.PORT || 3001;
+const port: number = +process.env.PORT || 3001;
 
 app.get('/api/cards', (req, res) => {
-  res.send([
-    { value: 0, label: '0', color: '#66bb6a' },
-    { value: 0.5, label: '½', color: '#66bb6a' },
-    { value: 1, label: '1', color: '#66bb6a' },
-    { value: 2, label: '2', color: '#66bb6a' },
-    { value: 3, label: '3', color: '#03a9f4' },
-    { value: 5, label: '5', color: '#03a9f4' },
-    { value: 8, label: '8', color: '#03a9f4' },
-    { value: 13, label: '13', color: '#ba68c8' },
-    { value: 20, label: '20', color: '#ba68c8' },
-    { value: 40, label: '40', color: '#ba68c8' },
-    { value: 99, label: '99', color: '#ba68c8' },
-    { value: 0, label: '?', color: '#c2185b' },
-    { value: 0, label: '☕️', color: '#c2185b' },
-  ]);
+  res.send(Card.getAllCards());
 });
 
+interface Rooms {
+  [roomId: string]: Game;
+}
+
+interface ExtendedSocket extends socketIo.Socket {
+  roomId: string;
+}
+
 // Data holding structure
-const rooms = {};
+const rooms: Rooms = {};
 
 // Get or create a room from a roomId
-const getRoom = (roomId) => {
+const getRoom = (roomId: string): Game => {
   if (!rooms[roomId]) {
-    rooms[roomId] = {
-      cards: [],
-      players: []
-    };
+    rooms[roomId] = new Game();
   }
 
   return rooms[roomId];
 };
 
 // Broadcast an action to all people in a room
-const sendToAll = (socket, room, action, data) => {
+const sendToAll = (socket: ExtendedSocket, roomId: string, action: string, data) => {
   console.log(` ==> ${action} ${JSON.stringify(data)}`);
   socket
     .broadcast
-    .to(room)
+    .to(roomId)
     .emit(action, data);
 };
 
 // Broadcast an action to the socket owner only
-const sendToSelf = (socket, action, data) => {
+const sendToSelf = (socket: ExtendedSocket, action: string, data: any) => {
   console.log(` --> ${action} ${JSON.stringify(data)}`);
   socket.emit(action, data);
 };
 
-const joinHandler = (roomId, room, payload, socket) => {
+const joinHandler = (roomId: string, room: Game, payload, socket: ExtendedSocket) => {
   socket.join(roomId, () => {
     socket.roomId = roomId;
     room.players.push({
       id: socket.id,
-      name: payload || 'Player Unknown'
+      name: payload || 'Player Unknown',
+      owner: room.players.length === 0,
     });
-    if (room.cards.length) {
-      sendToSelf(socket, RECEIVE_SELECTION, room.cards);
+    if (room.story.votes.length) {
+      sendToSelf(socket, RECEIVE_SELECTION, room.story.votes.map(vote => vote.card));
     }
     sendToSelf(socket, RECEIVE_PLAYER_LIST, room.players);
     sendToAll(socket, roomId, RECEIVE_PLAYER_LIST, room.players);
   });
 }
 
-const sendSelectionHandler = (roomId, room, payload, socket) => {
-  room.cards = payload;
+const sendSelectionHandler = (roomId: string, room: Game, payload, socket: ExtendedSocket) => {
+  room.story.votes = payload.map(card => new Vote(card, null));
   sendToAll(socket, roomId, RECEIVE_SELECTION, payload);
 }
 
-const renameUserHandler = (roomId, room, payload, socket) => {
+const renameUserHandler = (roomId: string, room: Game, payload, socket: ExtendedSocket) => {
   const user = find(room.players, { id: socket.id });
   if (user) {
     user.name = payload;
@@ -92,12 +86,12 @@ const renameUserHandler = (roomId, room, payload, socket) => {
   sendToAll(socket, roomId, RECEIVE_PLAYER_LIST, room.players);
 }
 
-const leaveSessionHandler = (roomId, room, payload, socket) => {
+const leaveSessionHandler = (roomId: string, room: Game, payload, socket: ExtendedSocket) => {
   room.players = room.players.filter(player => player.id !== socket.id);
   sendToAll(socket, roomId, RECEIVE_PLAYER_LIST, room.players);
 }
 
-io.on('connection', (socket) => {
+io.on('connection', (socket: ExtendedSocket) => {
   console.log(' Connection: New user connected - ', socket.id);
 
   const actions = [
