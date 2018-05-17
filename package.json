@@ -31,7 +31,8 @@
     "start": "concurrently --kill-others-on-fail \"yarn build-server\" \"yarn server\" \"yarn client\"",
     "client": "react-app-rewired start",
     "server": "nodemon ./server/dist/index.js",
-    "build": "react-app-rewired build",
+    "build": "npm run build-client && npm run build-server",
+    "build-client": "react-app-rewired build",
     "build-server": "tsc --p ./tsconfig.json",
     "test": "react-app-rewired test --env=jsdom"
   },

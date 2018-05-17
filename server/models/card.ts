@@ -1,13 +1,5 @@
 export default class Card {
-  readonly value: number;
-  readonly label: string;
-  readonly color: string;
-
-  constructor(value: number, label: string, color: string) {
-    this.value = value;
-    this.label = label;
-    this.color = color;
-  }
+  constructor(public readonly value: number, public readonly label: string, public readonly color: string) {}
 
   static getAllCards(): Card[] {
     return [
