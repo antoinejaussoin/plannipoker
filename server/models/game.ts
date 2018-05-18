@@ -7,12 +7,10 @@ export default class Game {
 
   constructor() {
     this.stories = [
-      new Story('Story'),
+      new Story('Story 1'),
+      new Story('Story 2'),
+      new Story('Story 3'),
     ];
-  }
-
-  get story() {
-    return this.stories[0];
   }
 
   createStory() {

@@ -1,14 +1,13 @@
 import { observable, action, runInAction } from 'mobx';
-import { RECEIVE_SELECTION, SEND_SELECTION, RENAME_USER, RECEIVE_PLAYER_LIST } from '../actions';
+import { RECEIVE_ALL_GAME_DATA, VOTE, RENAME_PLAYER, RECEIVE_PLAYER_LIST } from '../actions';
 
 class Store {
   transport = null;
   api = null;
 
   @observable username;
+  @observable game = null;
   @observable cards = [];
-  @observable selection = [];
-  @observable players = [];
   @observable roomId = null;
   
   constructor(transport, api) {
@@ -23,22 +22,21 @@ class Store {
     this.transport.connect();
     this.transport.join(roomId, this.username);
     
-    this.transport.on(RECEIVE_SELECTION, this.receiveSelection);
+    this.transport.on(RECEIVE_ALL_GAME_DATA, this.receiveGameData);
     this.transport.on(RECEIVE_PLAYER_LIST, this.receivePlayerList);
   }
 
   @action disconnect() {
-    this.selection = [];
-    this.players = [];
+    this.game = null;
     this.transport.disconnect();
   }
 
-  @action.bound receiveSelection(selection) {
-    this.selection = selection;
+  @action.bound receiveGameData(game) {
+    this.game = game;
   }
 
   @action.bound receivePlayerList(playerList) {
-    this.players = playerList;
+    this.game.players = playerList;
   }
 
   @action async loadCards() {
@@ -50,12 +48,13 @@ class Store {
 
   @action changeUsername(username) {
     this.username = username;
-    this.transport.send(RENAME_USER, username);
+    this.transport.send(RENAME_PLAYER, username);
   }
 
-  @action selectCard(card) {
-    this.selection.push(card);
-    this.transport.send(SEND_SELECTION, this.selection);
+  @action createStory(description) {
+    this.game.stories.push({
+
+    });
   }
 }
 

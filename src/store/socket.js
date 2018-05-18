@@ -1,5 +1,5 @@
 import io from 'socket.io-client';
-import { JOIN_SESSION } from '../actions';
+import { JOIN_GAME } from '../actions';
 
 export default class SocketIo {
   roomId = null;
@@ -18,7 +18,7 @@ export default class SocketIo {
 
   join(roomId, username) {
     this.roomId = roomId;
-    this.send(JOIN_SESSION, username);
+    this.send(JOIN_GAME, username);
   }
 
   send(action, payload) {

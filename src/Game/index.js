@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import Card from '../Components/Card';
 import UserList from '../Components/UserList';
 import Input from '../Components/Input';
+import Stories from './stories';
 
 const CardsContainer = styled.div`
   display: flex;
@@ -72,9 +73,10 @@ class Game extends Component {
         <Main>
           <Selection>
             <h1>Room {this.getSessionId()}</h1>
+            <Stories />
             <h1>Your selection:</h1>
             <CardsContainer>
-              { selection.map((card, index) =>
+              { [].map((card, index) =>
                 <Card
                   key={index}
                   color={card.color}>{card.label}</Card>) }
