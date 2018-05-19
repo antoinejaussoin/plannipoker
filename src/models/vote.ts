@@ -1,4 +1,4 @@
-import Card from './Card';
+import Card from './card';
 import Player from './player';
 
 export default class Vote {

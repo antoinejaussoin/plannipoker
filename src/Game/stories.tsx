@@ -1,6 +1,6 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
-import { Avatar, List, ListItem, ListItemText } from 'material-ui';
+import { Avatar, List, ListItem, ListItemText } from '@material-ui/core';
 import Store from '../store';
 
 export interface GameProps {

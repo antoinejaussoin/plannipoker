@@ -1,6 +1,6 @@
 import React, { SFC } from 'react';
-import { Avatar, List, ListItem, ListItemText } from 'material-ui';
-import deepOrange from 'material-ui/colors/deepOrange';
+import { Avatar, List, ListItem, ListItemText } from '@material-ui/core';
+import deepOrange from '@material-ui/core/colors/deepOrange';
 import { Player } from '../../models';
 
 export interface PlayerListProps {

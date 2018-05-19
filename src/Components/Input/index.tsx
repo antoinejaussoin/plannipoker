@@ -1,5 +1,5 @@
 import React, { SFC } from 'react';
-import { TextField } from 'material-ui';
+import { TextField } from '@material-ui/core';
 
 export interface InputProps {
   label: string;
