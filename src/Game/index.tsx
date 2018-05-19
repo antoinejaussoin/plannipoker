@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
+import { RouteComponentProps } from 'react-router';
 import styled from 'styled-components';
 import Card from '../Components/Card';
 import UserList from '../Components/UserList';
 import Input from '../Components/Input';
 import Stories from './stories';
+import Store from '../store';
 
 const CardsContainer = styled.div`
   display: flex;
@@ -39,9 +41,17 @@ const Selection = styled.div`
   min-height: 200px;
 `;
 
+export interface RouteProps {
+  gameId: string;
+}
+
+export interface GameProps extends RouteComponentProps<RouteProps> {
+  store?: Store;
+}
+
 @inject('store')
 @observer
-class Game extends Component {
+class Game extends Component<GameProps> {
   componentDidMount() {
     this.props.store.connect(this.getSessionId());
   }
@@ -51,7 +61,7 @@ class Game extends Component {
   }
 
   selectCard = (card) => {
-    this.props.store.selectCard(card);
+    // this.props.store.selectCard(card);
   }
 
   getSessionId() {
@@ -63,12 +73,12 @@ class Game extends Component {
   }
 
   render() {
-    const { username, selection, cards, players } = this.props.store;
+    const { username, cards, game } = this.props.store;
     return (
       <Page>
         <Aside>
           <Input label="Your name" value={username} onChange={this.onNameChange} />
-          <UserList users={players} />
+          <UserList users={game ? game.players : []} />
         </Aside>
         <Main>
           <Selection>
@@ -85,7 +95,7 @@ class Game extends Component {
           <Deck>
             <h1>Your deck:</h1>
             <CardsContainer>
-              { cards.map(card => 
+              { cards.map(card =>
                 <Card
                   key={card.label}
                   color={card.color}

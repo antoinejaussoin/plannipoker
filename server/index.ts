@@ -1,3 +1,5 @@
+/* tslint:disable no-console */
+
 import * as express from 'express';
 import * as http from 'http';
 import * as socketIo from 'socket.io';
@@ -69,12 +71,12 @@ const joinHandler = (roomId: string, room: Game, payload, socket: ExtendedSocket
     sendToSelf(socket, RECEIVE_ALL_GAME_DATA, room);
     sendToAll(socket, roomId, RECEIVE_PLAYER_LIST, room.players);
   });
-}
+};
 
 const receiveVoteHandler = (roomId: string, game: Game, payload: any, socket: ExtendedSocket) => {
   // game.story.votes = payload.map(card => new Vote(card, null));
   sendToAll(socket, roomId, RECEIVE_STORY_UPDATE, payload);
-}
+};
 
 const renamePlayerHandler = (roomId: string, room: Game, payload, socket: ExtendedSocket) => {
   const user = find(room.players, { id: socket.id });
@@ -83,12 +85,12 @@ const renamePlayerHandler = (roomId: string, room: Game, payload, socket: Extend
   }
   sendToSelf(socket, RECEIVE_PLAYER_LIST, room.players);
   sendToAll(socket, roomId, RECEIVE_PLAYER_LIST, room.players);
-}
+};
 
 const leaveGameHandler = (roomId: string, room: Game, payload, socket: ExtendedSocket) => {
   room.players = room.players.filter(player => player.id !== socket.id);
   sendToAll(socket, roomId, RECEIVE_PLAYER_LIST, room.players);
-}
+};
 
 io.on('connection', (socket: ExtendedSocket) => {
   console.log(' Connection: New user connected - ', socket.id);
@@ -102,7 +104,7 @@ io.on('connection', (socket: ExtendedSocket) => {
 
   actions.forEach(action => {
     socket.on(action.action, data => {
-      console.log(` [Room ${data.roomId}]: ${action.action}`)
+      console.log(` [Room ${data.roomId}]: ${action.action}`);
       const game = getGame(data.roomId);
       action.handler(data.roomId, game, data.payload, socket);
     });

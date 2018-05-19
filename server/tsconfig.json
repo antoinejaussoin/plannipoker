@@ -1,22 +1,25 @@
 {
   "compilerOptions": {
-    "module": "es6",
+    "module": "commonjs",
     "target": "es5",
+    "lib": [
+      "es6",
+      "es2017"
+    ],
     "declaration": true,
     "outDir": "./dist",
-    "jsx": "react",
-    "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
-    "experimentalDecorators": true,
     "noImplicitAny": false,
     "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "lib": ["es2015", "es2017", "dom" ]
+    "noUnusedParameters": false
   },
   "include": [
-    "src/index.tsx"
+    "./**/*"
   ],
   "exclude": [
-    "./node_modules"
+    "./dist/**/*",
+    "../node_modules",
+    "**/*.test.ts",
+    "**/*.test.tsx"
   ]
 }

@@ -1,7 +1,15 @@
 import io from 'socket.io-client';
 import { JOIN_GAME } from '../actions';
 
-export default class SocketIo {
+export interface Transport {
+  connect();
+  disconnect();
+  join(roomId: string, username: string);
+  send(action: string, payload: any);
+  on(action: string, callback: (payload: any) => void);
+}
+
+export default class SocketIo implements Transport {
   roomId = null;
   socket = null;
 
@@ -16,19 +24,19 @@ export default class SocketIo {
     this.socket.disconnect();
   }
 
-  join(roomId, username) {
+  join(roomId: string, username: string) {
     this.roomId = roomId;
     this.send(JOIN_GAME, username);
   }
 
-  send(action, payload) {
+  send(action: string, payload: any) {
     this.socket.emit(action, {
       roomId: this.roomId,
-      payload
+      payload,
     });
   }
 
-  on(action, callback) {
+  on(action: string, callback: (payload: any) => void) {
     this.socket.on(action, callback);
   }
 }

@@ -13,4 +13,4 @@ export const DELETE_STORY = 'planningpoker/delete-story';
 // In-game updates
 export const VOTE = 'planningpoker/vote';
 export const RECEIVE_STORY_UPDATE = 'plannipoker/receive-story-update';
-export const RECEIVE_ALL_GAME_DATA = 'planningpoker/receive-all-game-data'
+export const RECEIVE_ALL_GAME_DATA = 'planningpoker/receive-all-game-data';

@@ -12,8 +12,4 @@ export default class Game {
       new Story('Story 3'),
     ];
   }
-
-  createStory() {
-
-  }
 }

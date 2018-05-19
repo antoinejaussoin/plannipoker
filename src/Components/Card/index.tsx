@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { SFC } from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -17,7 +17,12 @@ const Content = styled.div`
   align-self: center;
 `;
 
-const Card = ({ children, color = '#ff867c', onClick }) => (
+export interface CardProps {
+  color: string;
+  onClick?: (() => void);
+}
+
+const Card: SFC<CardProps> = ({ children, color = '#ff867c', onClick }) => (
   <Container color={color} onClick={onClick}>
     <Content>
       {children}

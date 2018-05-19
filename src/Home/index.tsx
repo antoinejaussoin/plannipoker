@@ -3,9 +3,7 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import shortid from 'shortid';
 
-const Page = styled.div`
-  
-`;
+const Page = styled.div``;
 
 class Home extends Component {
   render() {

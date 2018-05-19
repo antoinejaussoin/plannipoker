@@ -9,10 +9,10 @@ import 'whatwg-fetch';
 import './global-styles';
 import Layout from './Layout';
 import registerServiceWorker from './registerServiceWorker';
-import { BrowserRouter } from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom';
 
 configure({
-  enforceActions: true
+  enforceActions: true,
 });
 
 const store = new Store(new SocketIo(), new Api());

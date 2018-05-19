@@ -6,7 +6,7 @@ const UserList = ({ users = [] }) => (
   <List>
     {users.map(user => (
       <ListItem key={user.id} dense button>
-        <Avatar alt={user.name} style={{ backgroundColor: deepOrange["600"] }}>{user.name[0]}</Avatar>
+        <Avatar alt={user.name} style={{ backgroundColor: deepOrange['600'] }}>{user.name[0]}</Avatar>
         <ListItemText primary={user.name} />
       </ListItem>
     ))}
