@@ -1,5 +1,7 @@
+import { Card } from '../models';
+
 export interface Api {
-  fetchCards(): Promise<any>;
+  fetchCards(): Promise<Card[]>;
 }
 
 export default class RestApi implements Api {

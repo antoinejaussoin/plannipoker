@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { SFC } from 'react';
 import { Avatar, List, ListItem, ListItemText } from 'material-ui';
 import deepOrange from 'material-ui/colors/deepOrange';
+import { Player } from '../../models';
 
-const UserList = ({ users = [] }) => (
+export interface PlayerListProps {
+  players: Player[];
+}
+
+const PlayerList: SFC<PlayerListProps> = ({ players = [] }) => (
   <List>
-    {users.map(user => (
+    {players.map(user => (
       <ListItem key={user.id} dense button>
         <Avatar alt={user.name} style={{ backgroundColor: deepOrange['600'] }}>{user.name[0]}</Avatar>
         <ListItemText primary={user.name} />
@@ -13,4 +18,4 @@ const UserList = ({ users = [] }) => (
   </List>
 );
 
-export default UserList;
+export default PlayerList;

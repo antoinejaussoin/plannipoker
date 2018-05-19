@@ -18,11 +18,13 @@ class StoriesList extends React.Component<GameProps> {
 
     return (
       <List>
-        {game.stories.map(story => (
-          <ListItem key={story.id} dense button>
-            <ListItemText primary={story.description} />
-          </ListItem>
-        ))}
+        {
+          game.stories.map(((story, index) => (
+            <ListItem key={index} dense button>
+              <ListItemText primary={story.description} />
+            </ListItem>
+          )))
+        }
       </List>
     );
   }

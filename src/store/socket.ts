@@ -1,4 +1,4 @@
-import io from 'socket.io-client';
+import io, { Socket } from 'socket.io-client';
 import { JOIN_GAME } from '../actions';
 
 export interface Transport {
@@ -10,8 +10,8 @@ export interface Transport {
 }
 
 export default class SocketIo implements Transport {
-  roomId = null;
-  socket = null;
+  roomId: string = null;
+  private socket: any;
 
   connect() {
     this.socket = io();

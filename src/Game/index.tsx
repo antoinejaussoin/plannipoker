@@ -3,7 +3,7 @@ import { observer, inject } from 'mobx-react';
 import { RouteComponentProps } from 'react-router';
 import styled from 'styled-components';
 import Card from '../Components/Card';
-import UserList from '../Components/UserList';
+import PlayerList from '../Components/UserList';
 import Input from '../Components/Input';
 import Stories from './stories';
 import Store from '../store';
@@ -78,7 +78,7 @@ class Game extends Component<GameProps> {
       <Page>
         <Aside>
           <Input label="Your name" value={username} onChange={this.onNameChange} />
-          <UserList users={game ? game.players : []} />
+          <PlayerList players={game ? game.players : []} />
         </Aside>
         <Main>
           <Selection>

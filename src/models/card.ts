@@ -1,6 +1,4 @@
 export default class Card {
-  constructor(public readonly value: number, public readonly label: string, public readonly color: string) {}
-
   static getAllCards(): Card[] {
     return [
       new Card(0, '0', '#66bb6a'),
@@ -16,6 +14,8 @@ export default class Card {
       new Card(99, '99', '#ba68c8'),
       new Card(0, '?', '#c2185b'),
       new Card(0, '☕️', '#c2185b'),
-    ]
+    ];
   }
+
+  constructor(public readonly value: number, public readonly label: string, public readonly color: string) {}
 }

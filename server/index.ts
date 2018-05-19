@@ -13,8 +13,8 @@ import { JOIN_GAME,
         RECEIVE_STORY_UPDATE,
         VOTE,
         RECEIVE_ALL_GAME_DATA,
-} from './actions';
-import { Card, Game, Story, Player, Vote } from './models';
+} from '../src/actions';
+import { Card, Game, Story, Player, Vote } from '../src/models';
 
 const app = express();
 const httpServer = new http.Server(app);

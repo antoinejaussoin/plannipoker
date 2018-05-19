@@ -1,13 +1,14 @@
 import { observable, action, runInAction } from 'mobx';
 import { RECEIVE_ALL_GAME_DATA, VOTE, RENAME_PLAYER, RECEIVE_PLAYER_LIST } from '../actions';
+import { Game, Card, Player } from '../models';
 import { Transport } from './socket';
 import { Api } from './api';
 
 class Store {
   @observable username: string;
-  @observable game = null;
-  @observable cards = [];
-  @observable roomId = null;
+  @observable game: Game ;
+  @observable cards: Card[] = [];
+  @observable roomId: string = null;
 
   constructor(public transport: Transport, public api: Api) {
     this.username = 'Unknown Player';
@@ -28,11 +29,11 @@ class Store {
     this.transport.disconnect();
   }
 
-  @action.bound receiveGameData(game: any) {
+  @action.bound receiveGameData(game: Game) {
     this.game = game;
   }
 
-  @action.bound receivePlayerList(playerList: any[]) {
+  @action.bound receivePlayerList(playerList: Player[]) {
     this.game.players = playerList;
   }
 
@@ -49,9 +50,9 @@ class Store {
   }
 
   @action createStory(description: string) {
-    this.game.stories.push({
+    // this.game.stories.push({
 
-    });
+    // });
   }
 }
 

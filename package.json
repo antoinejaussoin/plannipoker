@@ -12,6 +12,7 @@
     "@types/react-router-dom": "^4.2.6",
     "@types/shortid": "^0.0.29",
     "@types/socket.io": "^1.4.33",
+    "@types/socket.io-client": "^1.4.32",
     "express": "^4.16.3",
     "lodash": "^4.17.5",
     "material-ui": "^1.0.0-beta.47",
