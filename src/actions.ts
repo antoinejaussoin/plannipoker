@@ -9,6 +9,7 @@ export const RECEIVE_PLAYER_LIST = 'plannipoker/send-player-list';
 // Story management
 export const CREATE_STORY = 'planningpoker/create-story';
 export const DELETE_STORY = 'planningpoker/delete-story';
+export const SELECT_STORY = 'planningpoker/select-story';
 
 // In-game updates
 export const VOTE = 'planningpoker/vote';

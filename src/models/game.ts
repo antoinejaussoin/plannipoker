@@ -3,6 +3,7 @@ import Player from './player';
 
 export default class Game {
   stories: Story[] = [];
+  currentStoryId: number = 0;
   players: Player[] = [];
 
   constructor() {
@@ -11,5 +12,6 @@ export default class Game {
       new Story('Story 2'),
       new Story('Story 3'),
     ];
+    this.currentStoryId = this.stories[0].id;
   }
 }

@@ -73,7 +73,8 @@ class Game extends Component<GameProps> {
   }
 
   render() {
-    const { username, cards, game } = this.props.store;
+    const { store } = this.props;
+    const { username, cards, game, currentStory } = store;
     return (
       <Page>
         <Aside>
@@ -86,10 +87,10 @@ class Game extends Component<GameProps> {
             <Stories />
             <h1>Your selection:</h1>
             <CardsContainer>
-              { [].map((card, index) =>
+              { currentStory && currentStory.votes.map((vote, index) =>
                 <Card
                   key={index}
-                  color={card.color}>{card.label}</Card>) }
+                  color={vote.card.color}>{vote.card.label}</Card>) }
             </CardsContainer>
           </Selection>
           <Deck>
@@ -99,7 +100,7 @@ class Game extends Component<GameProps> {
                 <Card
                   key={card.label}
                   color={card.color}
-                  onClick={() => this.selectCard(card)}>{card.label}</Card>) }
+                  onClick={() => store.vote(card)}>{card.label}</Card>) }
             </CardsContainer>
           </Deck>
         </Main>

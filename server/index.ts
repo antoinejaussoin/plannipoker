@@ -10,6 +10,7 @@ import { JOIN_GAME,
         RECEIVE_PLAYER_LIST,
         CREATE_STORY,
         DELETE_STORY,
+        SELECT_STORY,
         RECEIVE_STORY_UPDATE,
         VOTE,
         RECEIVE_ALL_GAME_DATA,
@@ -31,6 +32,7 @@ interface Rooms {
 
 interface ExtendedSocket extends socketIo.Socket {
   roomId: string;
+  userId: number;
 }
 
 // Data holding structure
@@ -63,9 +65,10 @@ const sendToSelf = (socket: ExtendedSocket, action: string, data: any) => {
 const joinHandler = (roomId: string, room: Game, payload, socket: ExtendedSocket) => {
   socket.join(roomId, () => {
     socket.roomId = roomId;
+    socket.userId = payload.id;
     room.players.push({
-      id: socket.id,
-      name: payload || 'Player Unknown',
+      id: payload.id,
+      name: payload.username,
       owner: room.players.length === 0,
     });
     sendToSelf(socket, RECEIVE_ALL_GAME_DATA, room);
@@ -74,21 +77,24 @@ const joinHandler = (roomId: string, room: Game, payload, socket: ExtendedSocket
 };
 
 const createStoryHandler = (roomId: string, room: Game, payload, socket: ExtendedSocket) => {
-  room.stories.push({
-    description: payload,
-    flipped: false,
-    votes: [],
-  });
+  room.stories.push(payload);
+  sendToAll(socket, roomId, RECEIVE_ALL_GAME_DATA, room);
+};
+
+const selectStoryHandler = (roomId: string, room: Game, payload, socket: ExtendedSocket) => {
+  room.currentStoryId = payload;
   sendToAll(socket, roomId, RECEIVE_ALL_GAME_DATA, room);
 };
 
 const receiveVoteHandler = (roomId: string, game: Game, payload: any, socket: ExtendedSocket) => {
-  // game.story.votes = payload.map(card => new Vote(card, null));
-  sendToAll(socket, roomId, RECEIVE_STORY_UPDATE, payload);
+  const story = find(game.stories, { id: payload.storyId });
+  const player = find(game.players, { id: socket.userId });
+  story.votes.push(new Vote(payload.card, player));
+  sendToAll(socket, roomId, RECEIVE_STORY_UPDATE, story);
 };
 
 const renamePlayerHandler = (roomId: string, room: Game, payload, socket: ExtendedSocket) => {
-  const user = find(room.players, { id: socket.id });
+  const user = find(room.players, { id: socket.userId });
   if (user) {
     user.name = payload;
   }
@@ -97,7 +103,7 @@ const renamePlayerHandler = (roomId: string, room: Game, payload, socket: Extend
 };
 
 const leaveGameHandler = (roomId: string, room: Game, payload, socket: ExtendedSocket) => {
-  room.players = room.players.filter(player => player.id !== socket.id);
+  room.players = room.players.filter(player => player.id !== socket.userId);
   sendToAll(socket, roomId, RECEIVE_PLAYER_LIST, room.players);
 };
 
@@ -107,8 +113,9 @@ io.on('connection', (socket: ExtendedSocket) => {
   const actions = [
     { action: JOIN_GAME, handler: joinHandler },
     { action: VOTE, handler: receiveVoteHandler },
-    { action: CREATE_STORY, handler: createStoryHandler },
     { action: RENAME_PLAYER, handler: renamePlayerHandler },
+    { action: CREATE_STORY, handler: createStoryHandler },
+    { action: SELECT_STORY, handler: selectStoryHandler },
     { action: LEAVE_GAME, handler: leaveGameHandler },
   ];
 

@@ -21,7 +21,8 @@ export interface GameProps {
 @observer
 class StoriesList extends React.Component<GameProps> {
   render() {
-    const { game, newStoryName } = this.props.store;
+    const { store } = this.props;
+    const { game, newStoryName, canCreateStory } = store;
     if (!game) {
       return null;
     }
@@ -32,13 +33,19 @@ class StoriesList extends React.Component<GameProps> {
           <Input
             label="Add a story"
             value={newStoryName}
-            onChange={name => this.props.store.updateNewStoryName(name)} />
-          <Button onClick={() => this.props.store.createStory()}>Add</Button>
+            onChange={name => store.updateNewStoryName(name)} />
+          <Button onClick={() => store.createStory()} disabled={!canCreateStory}>Add</Button>
         </NewStory>
         <List>
           {
-            game.stories.map(((story, index) => (
-              <ListItem key={index} dense button>
+            game.stories.map((story => (
+              <ListItem
+                key={story.id}
+                dense button
+                onClick={() => store.selectStory(story.id)}
+                style={{
+                  backgroundColor: story.id === game.currentStoryId ? 'red': undefined,
+                }}>
                 <ListItemText primary={story.description} />
               </ListItem>
             )))
