@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^1.0.0",
-    "@material-ui/icons": "^1.0.0-beta.43",
+    "@material-ui/icons": "^1.0.0",
     "@types/core-js": "^0.9.46",
     "@types/express": "^4.11.1",
     "@types/lodash": "^4.14.108",
@@ -38,7 +38,7 @@
   "scripts": {
     "start": "concurrently --kill-others-on-fail \"yarn build-server\" \"yarn server\" \"yarn client\"",
     "client": "react-app-rewired start --scripts-version react-scripts-ts",
-    "server": "nodemon ./server/dist/index.js",
+    "server": "nodemon ./server/dist/server/index.js",
     "build": "npm run build-client && npm run build-server",
     "build-client": "react-app-rewired build --scripts-version react-scripts-ts",
     "build-server": "tsc --p ./server/tsconfig.json",

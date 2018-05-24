@@ -1,5 +1,5 @@
 import { observable, action, runInAction } from 'mobx';
-import { RECEIVE_ALL_GAME_DATA, VOTE, RENAME_PLAYER, RECEIVE_PLAYER_LIST } from '../actions';
+import { RECEIVE_ALL_GAME_DATA, VOTE, RENAME_PLAYER, RECEIVE_PLAYER_LIST, CREATE_STORY } from '../actions';
 import { Game, Card, Player } from '../models';
 import { Transport } from './socket';
 import { Api } from './api';
@@ -9,6 +9,7 @@ class Store {
   @observable game: Game ;
   @observable cards: Card[] = [];
   @observable roomId: string = null;
+  @observable newStoryName: string = '';
 
   constructor(public transport: Transport, public api: Api) {
     this.username = 'Unknown Player';
@@ -30,6 +31,7 @@ class Store {
   }
 
   @action.bound receiveGameData(game: Game) {
+    console.log('receive game: ', game);
     this.game = game;
   }
 
@@ -49,10 +51,18 @@ class Store {
     this.transport.send(RENAME_PLAYER, username);
   }
 
-  @action createStory(description: string) {
-    // this.game.stories.push({
+  @action createStory() {
+    this.game.stories.push({
+      description: this.newStoryName,
+      flipped: false,
+      votes: [],
+    });
+    this.transport.send(CREATE_STORY, this.newStoryName);
+    this.newStoryName = '';
+  }
 
-    // });
+  @action updateNewStoryName(name: string) {
+    this.newStoryName = name;
   }
 }
 

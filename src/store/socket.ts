@@ -30,6 +30,7 @@ export default class SocketIo implements Transport {
   }
 
   send(action: string, payload: any) {
+    console.log(action, this.roomId, payload);
     this.socket.emit(action, {
       roomId: this.roomId,
       payload,

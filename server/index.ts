@@ -73,6 +73,15 @@ const joinHandler = (roomId: string, room: Game, payload, socket: ExtendedSocket
   });
 };
 
+const createStoryHandler = (roomId: string, room: Game, payload, socket: ExtendedSocket) => {
+  room.stories.push({
+    description: payload,
+    flipped: false,
+    votes: [],
+  });
+  sendToAll(socket, roomId, RECEIVE_ALL_GAME_DATA, room);
+};
+
 const receiveVoteHandler = (roomId: string, game: Game, payload: any, socket: ExtendedSocket) => {
   // game.story.votes = payload.map(card => new Vote(card, null));
   sendToAll(socket, roomId, RECEIVE_STORY_UPDATE, payload);
@@ -98,6 +107,7 @@ io.on('connection', (socket: ExtendedSocket) => {
   const actions = [
     { action: JOIN_GAME, handler: joinHandler },
     { action: VOTE, handler: receiveVoteHandler },
+    { action: CREATE_STORY, handler: createStoryHandler },
     { action: RENAME_PLAYER, handler: renamePlayerHandler },
     { action: LEAVE_GAME, handler: leaveGameHandler },
   ];
