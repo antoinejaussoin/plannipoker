@@ -1,9 +1,9 @@
-import React from 'react';
-import { withRouter } from 'react-router-dom';
+import React, { SFC } from 'react';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { AppBar, Toolbar, IconButton, Typography } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 
-const Header = ({ history }) => (
+export const Header: SFC<RouteComponentProps<{}, {}>> = ({ history }) => (
   <AppBar position="static">
     <Toolbar>
       <IconButton color="inherit" aria-label="Menu">

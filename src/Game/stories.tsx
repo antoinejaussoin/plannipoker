@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
 import styled from 'styled-components';
-import { Avatar, List, ListItem, ListItemText, Button } from '@material-ui/core';
+import { Avatar, List, ListItem, ListItemText, Button, colors } from '@material-ui/core';
 import Input from '../Components/Input';
 import Store from '../store';
 
@@ -44,7 +44,7 @@ class StoriesList extends React.Component<GameProps> {
                 dense button
                 onClick={() => store.selectStory(story.id)}
                 style={{
-                  backgroundColor: story.id === game.currentStoryId ? 'red': undefined,
+                  backgroundColor: story.id === game.currentStoryId ? colors.lightBlue['300'] : undefined,
                 }}>
                 <ListItemText primary={story.description} />
               </ListItem>

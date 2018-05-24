@@ -60,16 +60,8 @@ class Game extends Component<GameProps> {
     this.props.store.disconnect();
   }
 
-  selectCard = (card) => {
-    // this.props.store.selectCard(card);
-  }
-
   getSessionId() {
     return this.props.match.params.gameId;
-  }
-
-  onNameChange = (value) => {
-    this.props.store.changeUsername(value);
   }
 
   render() {
@@ -78,14 +70,17 @@ class Game extends Component<GameProps> {
     return (
       <Page>
         <Aside>
-          <Input label="Your name" value={username} onChange={this.onNameChange} />
+          <Input
+            label="Your name"
+            value={username}
+            onChange={newName => store.changeUsername(newName)} />
           <PlayerList players={game ? game.players : []} />
         </Aside>
         <Main>
           <Selection>
             <h1>Room {this.getSessionId()}</h1>
             <Stories />
-            <h1>Your selection:</h1>
+            <h1>Votes:</h1>
             <CardsContainer>
               { currentStory && currentStory.votes.map((vote, index) =>
                 <Card
