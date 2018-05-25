@@ -1,6 +1,7 @@
 import { observable, action, runInAction, computed } from 'mobx';
 import { find, findIndex } from 'lodash';
 import ls from 'local-storage';
+import shortid from 'shortid';
 import {
   RECEIVE_ALL_GAME_DATA,
   VOTE,
@@ -19,7 +20,7 @@ const LOCAL_STORAGE_KEY = 'plannipoker-user';
 
 class Store {
   @observable username: string;
-  @observable userId: number;
+  @observable userId: string;
   @observable game: Game ;
   @observable cards: Card[] = [];
   @observable roomId: string = null;
@@ -29,7 +30,7 @@ class Store {
     const user = ls(LOCAL_STORAGE_KEY);
     if (!user) {
       this.username = 'Unknown Player';
-      this.userId = Date.now(); // Todo: truly random number instead
+      this.userId = shortid();
       this.persistUser();
     } else {
       this.username = user.username;
@@ -83,12 +84,7 @@ class Store {
   }
 
   @action createStory() {
-    const story: Story = {
-      id: Date.now(),
-      description: this.newStoryName,
-      flipped: false,
-      votes: [],
-    };
+    const story: Story = new Story(this.newStoryName);
     this.game.stories.push(story);
     this.transport.send(CREATE_STORY, story);
     this.newStoryName = '';
@@ -113,7 +109,7 @@ class Store {
     if (!this.game) {
       return null;
     }
-    return find(this.game.players, { name: this.username });
+    return find(this.game.players, { id: this.userId });
   }
 
   @computed get hasVoted(): boolean {
@@ -123,9 +119,9 @@ class Store {
     return this.currentStory.votes.find(vote => vote.player.name === this.username) !== undefined;
   }
 
-  @action selectStory(id: number) {
-    this.game.currentStoryId = id;
-    this.transport.send(SELECT_STORY, id);
+  @action selectStory(story: Story) {
+    this.game.currentStoryId = story.id;
+    this.transport.send(SELECT_STORY, story.id);
   }
 
   @action vote(card: Card) {

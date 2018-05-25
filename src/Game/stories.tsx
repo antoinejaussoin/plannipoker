@@ -42,7 +42,7 @@ class StoriesList extends React.Component<GameProps> {
               <ListItem
                 key={story.id}
                 dense button
-                onClick={() => store.selectStory(story.id)}
+                onClick={() => store.selectStory(story)}
                 style={{
                   backgroundColor: story.id === game.currentStoryId ? colors.lightBlue['300'] : undefined,
                 }}>

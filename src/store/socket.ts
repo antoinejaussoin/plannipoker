@@ -4,7 +4,7 @@ import { JOIN_GAME } from '../actions';
 export interface Transport {
   connect();
   disconnect();
-  join(roomId: string, userId: number, username: string);
+  join(roomId: string, userId: string, username: string);
   send(action: string, payload: any);
   on(action: string, callback: (payload: any) => void);
 }
@@ -24,7 +24,7 @@ export default class SocketIo implements Transport {
     this.socket.disconnect();
   }
 
-  join(roomId: string, id: number, username: string) {
+  join(roomId: string, id: string, username: string) {
     this.roomId = roomId;
     this.send(JOIN_GAME, { id, username });
   }
