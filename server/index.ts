@@ -32,7 +32,7 @@ interface Rooms {
 
 interface ExtendedSocket extends socketIo.Socket {
   roomId: string;
-  userId: number;
+  userId: string;
 }
 
 // Data holding structure
@@ -88,7 +88,7 @@ const selectStoryHandler = (roomId: string, room: Game, payload, socket: Extende
 
 const receiveVoteHandler = (roomId: string, game: Game, payload: any, socket: ExtendedSocket) => {
   const story = find(game.stories, { id: payload.storyId });
-  const player = find(game.players, { id: socket.userId });
+  const player: Player = find(game.players, { id: socket.userId });
   story.votes.push(new Vote(payload.card, player));
   sendToAll(socket, roomId, RECEIVE_STORY_UPDATE, story);
 };
