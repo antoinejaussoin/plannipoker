@@ -3,10 +3,9 @@ import { observer, inject } from 'mobx-react';
 import { RouteComponentProps } from 'react-router';
 import styled from 'styled-components';
 import Card from '../Components/Card';
-import PlayerList from '../Components/UserList';
-import Input from '../Components/Input';
-import Stories from './stories';
 import Store from '../store';
+import Drawer from './drawer';
+import Story from './story';
 
 const CardsContainer = styled.div`
   display: flex;
@@ -23,11 +22,6 @@ const Page = styled.div`
   display: flex;
 `;
 
-const Aside = styled.aside`
-  width: 300px;
-  border-right: 1px solid grey;
-`;
-
 const Main = styled.main`
   flex: 1;
 `;
@@ -39,6 +33,11 @@ const Deck = styled.div`
 const Selection = styled.div`
   margin: 20px;
   min-height: 200px;
+`;
+
+const Title = styled.h1`
+  font-size: 2em;
+  font-weight: 100;
 `;
 
 export interface RouteProps {
@@ -66,27 +65,13 @@ class Game extends Component<GameProps> {
 
   render() {
     const { store } = this.props;
-    const { username, cards, game, currentStory } = store;
+    const { username, cards, game } = store;
     return (
       <Page>
-        <Aside>
-          <Input
-            label="Your name"
-            value={username}
-            onChange={newName => store.changeUsername(newName)} />
-          <PlayerList players={game ? game.players : []} />
-        </Aside>
         <Main>
           <Selection>
-            <h1>Room {this.getSessionId()}</h1>
-            <Stories />
-            <h1>Votes:</h1>
-            <CardsContainer>
-              { currentStory && currentStory.votes.map((vote, index) =>
-                <Card
-                  key={index}
-                  color={vote.card.color}>{vote.card.label}</Card>) }
-            </CardsContainer>
+            <Title>Room {this.getSessionId()}</Title>
+            { store.currentStory && <Story story={store.currentStory} /> }
           </Selection>
           <Deck>
             <h1>Your deck:</h1>
@@ -99,6 +84,7 @@ class Game extends Component<GameProps> {
             </CardsContainer>
           </Deck>
         </Main>
+        <Drawer />
       </Page>
     );
   }

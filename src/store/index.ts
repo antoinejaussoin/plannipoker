@@ -1,4 +1,4 @@
-import { observable, action, runInAction, computed } from 'mobx';
+import { observable, action, runInAction, computed, decorate } from 'mobx';
 import { find, findIndex } from 'lodash';
 import ls from 'local-storage';
 import shortid from 'shortid';
@@ -18,10 +18,21 @@ import Story from '../models/story';
 
 const LOCAL_STORAGE_KEY = 'plannipoker-user';
 
+decorate(Game, {
+  stories: observable,
+  players: observable,
+  currentStoryId: observable,
+});
+
+decorate(Story, {
+  votes: observable,
+  flipped: observable,
+});
+
 class Store {
   @observable username: string;
   @observable userId: string;
-  @observable game: Game ;
+  @observable game: Game;
   @observable cards: Card[] = [];
   @observable roomId: string = null;
   @observable newStoryName: string = '';
@@ -127,11 +138,13 @@ class Store {
   @action vote(card: Card) {
     const currentStory = this.currentStory;
     const player = this.currentPlayer;
+
     if (currentStory && !this.hasVoted) {
       currentStory.votes.push({
         card,
         player,
       });
+      this.game = this.game;
       this.transport.send(VOTE, {
         storyId: currentStory.id,
         card,

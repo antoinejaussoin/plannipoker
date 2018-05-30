@@ -5,13 +5,9 @@ import { Avatar, List, ListItem, ListItemText, Button, colors } from '@material-
 import Input from '../Components/Input';
 import Store from '../store';
 
-const Container = styled.section`
+const Container = styled.section``;
 
-`;
-
-const NewStory = styled.div`
-
-`;
+const NewStory = styled.div``;
 
 export interface GameProps {
   store?: Store;
