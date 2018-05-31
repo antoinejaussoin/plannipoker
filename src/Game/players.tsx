@@ -18,13 +18,14 @@ export interface GameProps {
 class PlayersList extends React.Component<GameProps> {
   render() {
     const { store } = this.props;
-    const { game, newStoryName, canCreateStory } = store;
+    const { game, username, changeUsername } = store;
     if (!game) {
       return null;
     }
 
     return (
       <Container>
+        <Input value={username} onChange={changeUsername} label="Your name" />
         <List>
           {
             game.players.map((player => (

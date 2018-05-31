@@ -89,7 +89,7 @@ class Store {
     });
   }
 
-  @action changeUsername(username: string) {
+  @action.bound changeUsername(username: string) {
     this.username = username;
     this.transport.send(RENAME_PLAYER, username);
     this.persistUser();
