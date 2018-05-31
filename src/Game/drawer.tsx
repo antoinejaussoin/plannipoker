@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from 'styled-components';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -8,7 +9,16 @@ import Drawer from '../Components/Drawer';
 import Stories from './stories';
 import Players from './players';
 
-export default class RightDrawer extends React.Component {
+export interface RightDrawerProps {
+  open: boolean;
+  onToggle: () => void;
+}
+
+const Content = styled.section`
+  padding: 5px;
+`;
+
+export default class RightDrawer extends React.Component<RightDrawerProps> {
   state = {
     value: 'stories',
   };
@@ -19,8 +29,9 @@ export default class RightDrawer extends React.Component {
 
   render() {
     const { value } = this.state;
+    const { open, onToggle } = this.props;
     return (
-      <Drawer position="right">
+      <Drawer position="right" open={open} onToggle={onToggle}>
         <Tabs
           value={this.state.value}
           onChange={this.handleChange}
@@ -31,8 +42,10 @@ export default class RightDrawer extends React.Component {
           <Tab icon={<ListIcon />} value="stories" />
           <Tab icon={<PeopleIcon />} value="players" />
         </Tabs>
-        { value === 'stories' && <Stories />}
-        { value === 'players' && <Players />}
+        <Content>
+          { value === 'stories' && <Stories />}
+          { value === 'players' && <Players />}
+        </Content>
       </Drawer>
     );
   }

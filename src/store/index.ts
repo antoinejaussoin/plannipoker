@@ -36,6 +36,7 @@ class Store {
   @observable cards: Card[] = [];
   @observable roomId: string = null;
   @observable newStoryName: string = '';
+  @observable drawerOpen: boolean = false;
 
   constructor(public transport: Transport, public api: Api) {
     const user = ls(LOCAL_STORAGE_KEY);
@@ -150,6 +151,10 @@ class Store {
         card,
       });
     }
+  }
+
+  @action.bound toggleDrawer() {
+    this.drawerOpen = !this.drawerOpen;
   }
 
   private persistUser() {

@@ -7,8 +7,10 @@ const drawerWidth = 300;
 
 export const styles = theme => ({
   drawerPaper: {
-    marginTop: 70,
     width: drawerWidth,
+    [theme.breakpoints.up('md')]: {
+      paddingTop: 70,
+    },
   },
 });
 
@@ -19,19 +21,13 @@ interface DrawerClasses {
 export interface DrawerProps extends WithStyles<keyof ReturnType<typeof styles>> {
   position: 'right' | 'left';
   children: any;
+  open: boolean;
+  onToggle: () => void;
 }
 
 class ResponsiveDrawer extends React.Component<DrawerProps> {
-  state = {
-    mobileOpen: false,
-  };
-
-  handleDrawerToggle = () => {
-    this.setState({ mobileOpen: !this.state.mobileOpen });
-  };
-
   render() {
-    const { position, children, classes } = this.props;
+    const { position, children, open, onToggle, classes } = this.props;
 
     return (
       <>
@@ -39,11 +35,9 @@ class ResponsiveDrawer extends React.Component<DrawerProps> {
           <Drawer
             variant="temporary"
             anchor={position}
-            open={this.state.mobileOpen}
-            onClose={this.handleDrawerToggle}
-            classes={{
-              paper: classes.drawerPaper,
-            }}
+            open={open}
+            onClose={onToggle}
+            classes={{ paper: classes.drawerPaper }}
             ModalProps={{
               keepMounted: true, // Better open performance on mobile.
             }}
@@ -56,9 +50,7 @@ class ResponsiveDrawer extends React.Component<DrawerProps> {
             variant="permanent"
             anchor={position}
             open
-            classes={{
-              paper: classes.drawerPaper,
-            }}
+            classes={{ paper: classes.drawerPaper }}
           >
             {children}
           </Drawer>

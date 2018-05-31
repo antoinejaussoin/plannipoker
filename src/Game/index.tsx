@@ -2,10 +2,13 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { RouteComponentProps } from 'react-router';
 import styled from 'styled-components';
+import { withTheme, withStyles, WithTheme, Hidden } from '@material-ui/core';
+import { Breakpoints } from '@material-ui/core/styles/createBreakpoints';
 import Card from '../Components/Card';
 import Store from '../store';
 import Drawer from './drawer';
 import Story from './story';
+import Deck from './deck';
 
 const CardsContainer = styled.div`
   display: flex;
@@ -22,12 +25,22 @@ const Page = styled.div`
   display: flex;
 `;
 
-const Main = styled.main`
+interface MainProps {
+  breakpoints: Breakpoints;
+}
+
+const Main = styled<MainProps, 'main'>('main')`
+  display: flex;
+  flex-direction: column;
   flex: 1;
+  min-height: calc(100vh - 80px);
+  ${props => props.breakpoints.up('md')} {
+    margin-right: 300px;
+  };
 `;
 
-const Deck = styled.div`
-  margin: 20px;
+const Stories = styled.div`
+  flex: 1;
 `;
 
 const Selection = styled.div`
@@ -38,6 +51,10 @@ const Selection = styled.div`
 const Title = styled.h1`
   font-size: 2em;
   font-weight: 100;
+
+  @media (max-height: 600px) {
+    display: none;
+  }
 `;
 
 export interface RouteProps {
@@ -50,7 +67,7 @@ export interface GameProps extends RouteComponentProps<RouteProps> {
 
 @inject('store')
 @observer
-class Game extends Component<GameProps> {
+class Game extends Component<GameProps & WithTheme> {
   componentDidMount() {
     this.props.store.connect(this.getSessionId());
   }
@@ -64,30 +81,21 @@ class Game extends Component<GameProps> {
   }
 
   render() {
-    const { store } = this.props;
+    const { store, theme } = this.props;
     const { username, cards, game } = store;
     return (
       <Page>
-        <Main>
-          <Selection>
-            <Title>Room {this.getSessionId()}</Title>
-            { store.currentStory && <Story story={store.currentStory} /> }
-          </Selection>
-          <Deck>
-            <h1>Your deck:</h1>
-            <CardsContainer>
-              { cards.map(card =>
-                <Card
-                  key={card.label}
-                  color={card.color}
-                  onClick={() => store.vote(card)}>{card.label}</Card>) }
-            </CardsContainer>
-          </Deck>
+        <Main breakpoints={theme.breakpoints}>
+          <Title>Game {this.getSessionId()}</Title>
+          <Stories>
+          { store.currentStory && <Story story={store.currentStory} /> }
+          </Stories>
+          <Deck cards={cards} onSelect={card => store.vote(card)} />
         </Main>
-        <Drawer />
+        <Drawer open={store.drawerOpen} onToggle={store.toggleDrawer} />
       </Page>
     );
   }
 }
 
-export default Game;
+export default withTheme()(Game);

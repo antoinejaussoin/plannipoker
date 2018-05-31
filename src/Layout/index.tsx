@@ -14,7 +14,7 @@ const Footer = styled.footer`
 `;
 
 const Main = styled.main`
-  margin: 50px;
+  margin: 10px;
 `;
 
 class App extends Component {
