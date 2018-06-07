@@ -11,6 +11,7 @@ import styled from 'styled-components';
 
 export interface PlayerListProps {
   story: Story;
+  userId: string;
 }
 
 const Votes = styled.div`
@@ -32,7 +33,7 @@ const VoteName = styled.div`
   }
 `;
 
-const StoryCard: SFC<PlayerListProps> = ({ story }) => (
+const StoryCard: SFC<PlayerListProps> = ({ story, userId }) => (
   <Card raised>
     <CardHeader
       title={story.description}
@@ -42,6 +43,7 @@ const StoryCard: SFC<PlayerListProps> = ({ story }) => (
         { story.votes.map((vote, index) => (
           <Vote key={index}>
             <PlayingCard
+              faceDown={!story.flipped && vote.player.id !== userId}
               color={vote.card.color}>{vote.card.label}
             </PlayingCard>
             <VoteName>

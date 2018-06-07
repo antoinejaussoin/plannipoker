@@ -10,11 +10,5 @@ export default class Game {
 
   constructor() {
     this.id = shortid();
-    this.stories = [
-      new Story('Story 1'),
-      new Story('Story 2'),
-      new Story('Story 3'),
-    ];
-    this.currentStoryId = this.stories[0].id;
   }
 }
