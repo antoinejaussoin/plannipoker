@@ -82,13 +82,19 @@ class Game extends Component<GameProps & WithTheme> {
 
   render() {
     const { store, theme } = this.props;
-    const { username, cards, game, userId } = store;
+    const { username, cards, game, userId, flipStory, currentPlayer } = store;
     return (
       <Page>
         <Main breakpoints={theme.breakpoints}>
           <Title>Game {this.getSessionId()}</Title>
           <Stories>
-          { store.currentStory && <Story story={store.currentStory} userId={userId} /> }
+          { store.currentStory &&
+            <Story
+              story={store.currentStory}
+              player={currentPlayer}
+              flip={flipStory}
+            />
+          }
           </Stories>
           <Deck cards={cards} onSelect={card => store.vote(card)} />
         </Main>

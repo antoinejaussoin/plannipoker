@@ -10,6 +10,7 @@ import {
   RECEIVE_STORY_UPDATE,
   CREATE_STORY,
   SELECT_STORY,
+  FLIP_STORY,
 } from '../actions';
 import { Game, Card, Player, Vote } from '../models';
 import { Transport } from './socket';
@@ -22,6 +23,7 @@ decorate(Game, {
   stories: observable,
   players: observable,
   currentStoryId: observable,
+  owner: computed,
 });
 
 decorate(Story, {
@@ -151,6 +153,13 @@ class Store {
         card,
       });
     }
+  }
+
+  @action.bound flipStory(story: Story) {
+    story.flipped = true;
+    this.transport.send(FLIP_STORY, {
+      storyId: story.id,
+    });
   }
 
   @action.bound toggleDrawer() {

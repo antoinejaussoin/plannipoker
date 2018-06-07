@@ -11,4 +11,8 @@ export default class Game {
   constructor() {
     this.id = shortid();
   }
+
+  get owner(): Player {
+    return this.players.find(player => player.owner);
+  }
 }

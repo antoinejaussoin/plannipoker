@@ -14,6 +14,7 @@ import { JOIN_GAME,
         RECEIVE_STORY_UPDATE,
         VOTE,
         RECEIVE_ALL_GAME_DATA,
+        FLIP_STORY,
 } from '../src/actions';
 import { Card, Game, Story, Player, Vote } from '../src/models';
 
@@ -62,17 +63,17 @@ const sendToSelf = (socket: ExtendedSocket, action: string, data: any) => {
   socket.emit(action, data);
 };
 
-const joinHandler = (roomId: string, room: Game, payload, socket: ExtendedSocket) => {
+const joinHandler = (roomId: string, game: Game, payload, socket: ExtendedSocket) => {
   socket.join(roomId, () => {
     socket.roomId = roomId;
     socket.userId = payload.id;
-    room.players.push({
+    game.players.push({
       id: payload.id,
       name: payload.username,
-      owner: room.players.length === 0,
+      owner: game.players.length === 0,
     });
-    sendToSelf(socket, RECEIVE_ALL_GAME_DATA, room);
-    sendToAll(socket, roomId, RECEIVE_PLAYER_LIST, room.players);
+    sendToSelf(socket, RECEIVE_ALL_GAME_DATA, game);
+    sendToAll(socket, roomId, RECEIVE_PLAYER_LIST, game.players);
   });
 };
 
@@ -87,9 +88,15 @@ const selectStoryHandler = (roomId: string, room: Game, payload, socket: Extende
 };
 
 const receiveVoteHandler = (roomId: string, game: Game, payload: any, socket: ExtendedSocket) => {
-  const story = find(game.stories, { id: payload.storyId });
+  const story = game.stories.find(s => s.id === payload.storyId);
   const player: Player = find(game.players, { id: socket.userId });
   story.votes.push(new Vote(payload.card, player));
+  sendToAll(socket, roomId, RECEIVE_STORY_UPDATE, story);
+};
+
+const flipStoryHandler = (roomId: string, game: Game, payload: any, socket: ExtendedSocket) => {
+  const story = game.stories.find(s => s.id === payload.storyId);
+  story.flipped = true;
   sendToAll(socket, roomId, RECEIVE_STORY_UPDATE, story);
 };
 
@@ -117,6 +124,7 @@ io.on('connection', (socket: ExtendedSocket) => {
     { action: CREATE_STORY, handler: createStoryHandler },
     { action: SELECT_STORY, handler: selectStoryHandler },
     { action: LEAVE_GAME, handler: leaveGameHandler },
+    { action: FLIP_STORY, handler: flipStoryHandler },
   ];
 
   actions.forEach(action => {
