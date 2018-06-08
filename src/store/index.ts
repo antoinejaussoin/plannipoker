@@ -100,6 +100,9 @@ class Store {
   @action createStory() {
     const story: Story = new Story(this.newStoryName);
     this.game.stories.push(story);
+    if (!this.game.currentStoryId) {
+      this.game.currentStoryId = story.id;
+    }
     this.transport.send(CREATE_STORY, story);
     this.newStoryName = '';
   }

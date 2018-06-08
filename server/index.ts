@@ -79,6 +79,9 @@ const joinHandler = (roomId: string, game: Game, payload, socket: ExtendedSocket
 
 const createStoryHandler = (roomId: string, room: Game, payload, socket: ExtendedSocket) => {
   room.stories.push(payload);
+  if (!room.currentStoryId) {
+    room.currentStoryId = payload.id;
+  }
   sendToAll(socket, roomId, RECEIVE_ALL_GAME_DATA, room);
 };
 

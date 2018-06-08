@@ -9,6 +9,7 @@ import Store from '../store';
 import Drawer from './drawer';
 import Story from './story';
 import Deck from './deck';
+import NoStory from './no-story';
 
 const CardsContainer = styled.div`
   display: flex;
@@ -88,13 +89,14 @@ class Game extends Component<GameProps & WithTheme> {
         <Main breakpoints={theme.breakpoints}>
           <Title>Game {this.getSessionId()}</Title>
           <Stories>
-          { store.currentStory &&
-            <Story
-              story={store.currentStory}
-              player={currentPlayer}
-              flip={flipStory}
-            />
-          }
+            { !store.currentStory && <NoStory /> }
+            { store.currentStory &&
+              <Story
+                story={store.currentStory}
+                player={currentPlayer}
+                flip={flipStory}
+              />
+            }
           </Stories>
           <Deck cards={cards} onSelect={card => store.vote(card)} />
         </Main>
