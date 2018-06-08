@@ -15,6 +15,8 @@ import { JOIN_GAME,
         VOTE,
         RECEIVE_ALL_GAME_DATA,
         FLIP_STORY,
+        RENAME_GAME,
+        RECEIVE_GAME_NAME_CHANGE,
 } from '../src/actions';
 import { Card, Game, Story, Player, Vote } from '../src/models';
 
@@ -77,17 +79,17 @@ const joinHandler = (roomId: string, game: Game, payload, socket: ExtendedSocket
   });
 };
 
-const createStoryHandler = (roomId: string, room: Game, payload, socket: ExtendedSocket) => {
-  room.stories.push(payload);
-  if (!room.currentStoryId) {
-    room.currentStoryId = payload.id;
+const createStoryHandler = (roomId: string, game: Game, payload, socket: ExtendedSocket) => {
+  game.stories.push(payload);
+  if (!game.currentStoryId) {
+    game.currentStoryId = payload.id;
   }
-  sendToAll(socket, roomId, RECEIVE_ALL_GAME_DATA, room);
+  sendToAll(socket, roomId, RECEIVE_ALL_GAME_DATA, game);
 };
 
-const selectStoryHandler = (roomId: string, room: Game, payload, socket: ExtendedSocket) => {
-  room.currentStoryId = payload;
-  sendToAll(socket, roomId, RECEIVE_ALL_GAME_DATA, room);
+const selectStoryHandler = (roomId: string, game: Game, payload, socket: ExtendedSocket) => {
+  game.currentStoryId = payload;
+  sendToAll(socket, roomId, RECEIVE_ALL_GAME_DATA, game);
 };
 
 const receiveVoteHandler = (roomId: string, game: Game, payload: any, socket: ExtendedSocket) => {
@@ -103,18 +105,23 @@ const flipStoryHandler = (roomId: string, game: Game, payload: any, socket: Exte
   sendToAll(socket, roomId, RECEIVE_STORY_UPDATE, story);
 };
 
-const renamePlayerHandler = (roomId: string, room: Game, payload, socket: ExtendedSocket) => {
-  const user = find(room.players, { id: socket.userId });
+const renamePlayerHandler = (roomId: string, game: Game, payload, socket: ExtendedSocket) => {
+  const user = find(game.players, { id: socket.userId });
   if (user) {
     user.name = payload;
   }
-  sendToSelf(socket, RECEIVE_PLAYER_LIST, room.players);
-  sendToAll(socket, roomId, RECEIVE_PLAYER_LIST, room.players);
+  sendToSelf(socket, RECEIVE_PLAYER_LIST, game.players);
+  sendToAll(socket, roomId, RECEIVE_PLAYER_LIST, game.players);
 };
 
-const leaveGameHandler = (roomId: string, room: Game, payload, socket: ExtendedSocket) => {
-  room.players = room.players.filter(player => player.id !== socket.userId);
-  sendToAll(socket, roomId, RECEIVE_PLAYER_LIST, room.players);
+const leaveGameHandler = (roomId: string, game: Game, payload, socket: ExtendedSocket) => {
+  game.players = game.players.filter(player => player.id !== socket.userId);
+  sendToAll(socket, roomId, RECEIVE_PLAYER_LIST, game.players);
+};
+
+const renameGameHandler = (roomId: string, game: Game, payload, socket: ExtendedSocket) => {
+  game.name = payload;
+  sendToAll(socket, roomId, RECEIVE_GAME_NAME_CHANGE, game.name);
 };
 
 io.on('connection', (socket: ExtendedSocket) => {
@@ -128,6 +135,7 @@ io.on('connection', (socket: ExtendedSocket) => {
     { action: SELECT_STORY, handler: selectStoryHandler },
     { action: LEAVE_GAME, handler: leaveGameHandler },
     { action: FLIP_STORY, handler: flipStoryHandler },
+    { action: RENAME_GAME, handler: renameGameHandler },
   ];
 
   actions.forEach(action => {

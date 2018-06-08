@@ -11,6 +11,8 @@ import {
   CREATE_STORY,
   SELECT_STORY,
   FLIP_STORY,
+  RENAME_GAME,
+  RECEIVE_GAME_NAME_CHANGE,
 } from '../actions';
 import { Game, Card, Player, Vote } from '../models';
 import { Transport } from './socket';
@@ -62,6 +64,7 @@ class Store {
     this.transport.on(RECEIVE_ALL_GAME_DATA, this.receiveGameData);
     this.transport.on(RECEIVE_PLAYER_LIST, this.receivePlayerList);
     this.transport.on(RECEIVE_STORY_UPDATE, this.receiveStoryUpdate);
+    this.transport.on(RECEIVE_GAME_NAME_CHANGE, this.receiveGameNameChange);
   }
 
   @action disconnect() {
@@ -75,6 +78,10 @@ class Store {
 
   @action.bound receivePlayerList(playerList: Player[]) {
     this.game.players = playerList;
+  }
+
+  @action.bound receiveGameNameChange(name: string) {
+    this.game.name = name;
   }
 
   @action.bound receiveStoryUpdate(story: Story) {
@@ -167,6 +174,11 @@ class Store {
 
   @action.bound toggleDrawer() {
     this.drawerOpen = !this.drawerOpen;
+  }
+
+  @action.bound renameGame(name: string) {
+    this.game.name = name;
+    this.transport.send(RENAME_GAME, name);
   }
 
   private persistUser() {

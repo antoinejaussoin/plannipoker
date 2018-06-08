@@ -4,7 +4,7 @@ import { RouteComponentProps } from 'react-router';
 import styled from 'styled-components';
 import { withTheme, withStyles, WithTheme, Hidden } from '@material-ui/core';
 import { Breakpoints } from '@material-ui/core/styles/createBreakpoints';
-import Card from '../Components/Card';
+import EditableLabel from '../Components/EditableLabel';
 import Store from '../store';
 import Drawer from './drawer';
 import Story from './story';
@@ -87,7 +87,9 @@ class Game extends Component<GameProps & WithTheme> {
     return (
       <Page>
         <Main breakpoints={theme.breakpoints}>
-          <Title>Game {this.getSessionId()}</Title>
+          <Title>
+            <EditableLabel value={game ? game.name : ''} placeholder="(no name)" onChange={store.renameGame} />
+          </Title>
           <Stories>
             { !store.currentStory && <NoStory /> }
             { store.currentStory &&
