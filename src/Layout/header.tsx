@@ -16,6 +16,7 @@ const styles = theme => ({
 
 const Title = styled(Typography)`
   flex: 1;
+  cursor: pointer;
 `;
 
 export interface HeaderProps extends RouteComponentProps<{}, {}>, WithStyles<'appBar'> {
