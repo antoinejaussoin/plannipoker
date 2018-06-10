@@ -40,6 +40,7 @@ class Store {
   @observable cards: Card[] = [];
   @observable roomId: string = null;
   @observable newStoryName: string = '';
+  @observable newStoryDescription: string = '';
   @observable drawerOpen: boolean = false;
 
   constructor(public transport: Transport, public api: Api) {
@@ -105,17 +106,22 @@ class Store {
   }
 
   @action createStory() {
-    const story: Story = new Story(this.newStoryName);
+    const story: Story = new Story(this.newStoryName, this.newStoryDescription);
     this.game.stories.push(story);
     if (!this.game.currentStoryId) {
       this.game.currentStoryId = story.id;
     }
     this.transport.send(CREATE_STORY, story);
     this.newStoryName = '';
+    this.newStoryDescription = '';
   }
 
   @action updateNewStoryName(name: string) {
     this.newStoryName = name;
+  }
+
+  @action updateNewStoryDescription(description: string) {
+    this.newStoryDescription = description;
   }
 
   @computed get canCreateStory(): boolean {

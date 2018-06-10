@@ -1,7 +1,8 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
 import styled from 'styled-components';
-import { Avatar, List, ListItem, ListItemText, Button, colors } from '@material-ui/core';
+import { Avatar, List, ListItem, ListItemText,
+  Button, Card, CardContent, colors, CardActions, CardHeader } from '@material-ui/core';
 import Input from '../Components/Input';
 import Store from '../store';
 
@@ -18,20 +19,29 @@ export interface GameProps {
 class StoriesList extends React.Component<GameProps> {
   render() {
     const { store } = this.props;
-    const { game, newStoryName, canCreateStory } = store;
+    const { game, newStoryName, newStoryDescription, canCreateStory } = store;
     if (!game) {
       return null;
     }
 
     return (
       <Container>
-        <NewStory>
-          <Input
-            label="Add a story"
-            value={newStoryName}
-            onChange={name => store.updateNewStoryName(name)} />
-          <Button onClick={() => store.createStory()} disabled={!canCreateStory}>Add</Button>
-        </NewStory>
+        <Card>
+          <CardHeader title="New Story" />
+          <CardContent>
+            <Input
+              label="Title (or Jira Number)"
+              value={newStoryName}
+              onChange={name => store.updateNewStoryName(name)} />
+            <Input
+              label="Short description"
+              value={newStoryDescription}
+              onChange={description => store.updateNewStoryDescription(description)} />
+          </CardContent>
+          <CardActions>
+            <Button onClick={() => store.createStory()} disabled={!canCreateStory}>Add</Button>
+          </CardActions>
+        </Card>
         <List>
           {
             game.stories.map((story => (
@@ -42,7 +52,7 @@ class StoriesList extends React.Component<GameProps> {
                 style={{
                   backgroundColor: story.id === game.currentStoryId ? colors.lightBlue['300'] : undefined,
                 }}>
-                <ListItemText primary={story.description} />
+                <ListItemText primary={story.title} />
               </ListItem>
             )))
           }

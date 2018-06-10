@@ -33,7 +33,8 @@ const VoteName = styled.div`
 const StoryCard: SFC<StoryCardProps> = ({ story, player, flip }) => (
   <Card raised>
     <CardHeader
-      title={story.description}
+      title={story.title}
+      subheader={story.description}
     />
     <CardContent>
       <Votes>
