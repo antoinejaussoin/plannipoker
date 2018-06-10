@@ -158,12 +158,17 @@ class Store {
     const currentStory = this.currentStory;
     const player = this.currentPlayer;
 
-    if (currentStory && !this.hasVoted) {
-      currentStory.votes.push({
-        card,
-        player,
-      });
-      this.game = this.game;
+    if (currentStory && !currentStory.flipped) {
+      if (!this.hasVoted) {
+        currentStory.votes.push({
+          card,
+          player,
+        });
+      } else {
+        const currentVote = currentStory.votes.find(vote => vote.player.id === player.id);
+        currentVote.card = card;
+      }
+
       this.transport.send(VOTE, {
         storyId: currentStory.id,
         card,

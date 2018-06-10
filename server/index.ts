@@ -93,9 +93,20 @@ const selectStoryHandler = (roomId: string, game: Game, payload, socket: Extende
 };
 
 const receiveVoteHandler = (roomId: string, game: Game, payload: any, socket: ExtendedSocket) => {
+  const card = payload.card;
   const story = game.stories.find(s => s.id === payload.storyId);
-  const player: Player = find(game.players, { id: socket.userId });
-  story.votes.push(new Vote(payload.card, player));
+
+  if (story.flipped) {
+    return;
+  }
+
+  const player = find(game.players, { id: socket.userId });
+  const currentVote = story.votes.find(vote => vote.player.id === player.id);
+  if (!currentVote) {
+    story.votes.push(new Vote(card, player));
+  } else {
+    currentVote.card = card;
+  }
   sendToAll(socket, roomId, RECEIVE_STORY_UPDATE, story);
 };
 
