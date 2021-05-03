@@ -10,6 +10,9 @@
   </script>
   
   <style>
+	  @tailwind base;
+@tailwind components;
+@tailwind utilities;
 	:global(body) {
 	  margin: 0;
 	  font-family: Arial, Helvetica, sans-serif;
@@ -66,5 +69,24 @@
 		</a>
 	  </p>
 	</header>
+	<figure class="md:flex bg-gray-100 rounded-xl p-8 md:p-0">
+		<div class="pt-6 md:p-8 text-center md:text-left space-y-4">
+		  <blockquote>
+			<p class="text-lg font-semibold">
+			  “Tailwind CSS is the only framework that I've seen scale
+			  on large teams. It’s easy to customize, adapts to any design,
+			  and the build size is tiny.”
+			</p>
+		  </blockquote>
+		  <figcaption class="font-medium">
+			<div class="text-red-500">
+			  Sarah Dayan
+			</div>
+			<div class="text-gray-500">
+			  Staff Engineer, Algolia
+			</div>
+		  </figcaption>
+		</div>
+	  </figure>
   </div>
   

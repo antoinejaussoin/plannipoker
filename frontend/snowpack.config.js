@@ -5,6 +5,7 @@ module.exports = {
     src: {url: '/dist'},
   },
   plugins: [
+    '@snowpack/plugin-postcss',
     '@snowpack/plugin-svelte',
     '@snowpack/plugin-dotenv',
     [
