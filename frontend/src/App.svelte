@@ -1,5 +1,6 @@
 <script lang='typescript'>
 	import {onMount} from 'svelte';
+	import './App.css';
 	let count: number = 0;
 	onMount(() => {
 	  const interval = setInterval(() => count++, 1000);
@@ -10,9 +11,7 @@
   </script>
   
   <style>
-	  @tailwind base;
-@tailwind components;
-@tailwind utilities;
+	  
 	:global(body) {
 	  margin: 0;
 	  font-family: Arial, Helvetica, sans-serif;
