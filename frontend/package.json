@@ -16,9 +16,7 @@
     "prettier": "^2.2.1",
     "prettier-plugin-svelte": "^2.2.0",
     "svelte": "^3.37.0",
-    "tailwindcss": "^2.1.2"
-  },
-  "devDependencies": {
+    "tailwindcss": "^2.1.2",
     "@snowpack/plugin-dotenv": "^2.1.0",
     "@snowpack/plugin-svelte": "^3.6.1",
     "@snowpack/plugin-typescript": "^1.2.1",
